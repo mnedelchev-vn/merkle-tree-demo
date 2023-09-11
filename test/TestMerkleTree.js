@@ -69,15 +69,16 @@ describe("Merkle Tree Test", function () {
         const usdcBalance = await USDC.balanceOf(user1.address);
 
         const usdcValue = ethers.parseUnits('1000', 6);
-        await TestMerkleTreeContract.connect(user1).claim(
-            PROOF,
-            usdcValue
+        await expect(
+            TestMerkleTreeContract.connect(user1).claim(
+                PROOF,
+                usdcValue
+            )
+        ).to.be.revertedWithCustomError(
+            TestMerkleTreeContract,
+            "AlreadyClaimed"
         );
-
-        const usdcBalanceAfter = await USDC.balanceOf(user1.address);
-
-        expect(usdcBalanceAfter).to.be.greaterThan(usdcBalance);
-        expect(BigInt(usdcBalanceAfter)).to.equal(BigInt(usdcBalance) + BigInt(usdcValue));
+        expect(await USDC.balanceOf(user1.address)).to.eq(usdcBalance);
     });
 
     it("Test user2 INVALID claim ( false amount )", async function () {
@@ -85,15 +86,16 @@ describe("Merkle Tree Test", function () {
         const usdcBalance = await USDC.balanceOf(user2.address);
 
         const usdcValue = ethers.parseUnits('3000', 6);
-        await TestMerkleTreeContract.connect(user2).claim(
-            PROOF,
-            usdcValue
+        await expect(
+            TestMerkleTreeContract.connect(user2).claim(
+                PROOF,
+                usdcValue
+            )
+        ).to.be.revertedWithCustomError(
+            TestMerkleTreeContract,
+            "InvalidClaim"
         );
-
-        const usdcBalanceAfter = await USDC.balanceOf(user2.address);
-
-        expect(usdcBalanceAfter).to.be.greaterThan(usdcBalance);
-        expect(BigInt(usdcBalanceAfter)).to.equal(BigInt(usdcBalance) + BigInt(usdcValue));
+        expect(await USDC.balanceOf(user2.address)).to.eq(usdcBalance);
     });
 
     it("Test user2 VALID claim", async function () {
@@ -117,14 +119,15 @@ describe("Merkle Tree Test", function () {
         const usdcBalance = await USDC.balanceOf(user3.address);
 
         const usdcValue = ethers.parseUnits('2000', 6);
-        await TestMerkleTreeContract.connect(user3).claim(
-            PROOF,
-            usdcValue
+        await expect(
+            TestMerkleTreeContract.connect(user3).claim(
+                PROOF,
+                usdcValue
+            )
+        ).to.be.revertedWithCustomError(
+            TestMerkleTreeContract,
+            "InvalidClaim"
         );
-
-        const usdcBalanceAfter = await USDC.balanceOf(user3.address);
-
-        expect(usdcBalanceAfter).to.be.greaterThan(usdcBalance);
-        expect(BigInt(usdcBalanceAfter)).to.equal(BigInt(usdcBalance) + BigInt(usdcValue));
+        expect(await USDC.balanceOf(user3.address)).to.eq(usdcBalance);
     });
 });
