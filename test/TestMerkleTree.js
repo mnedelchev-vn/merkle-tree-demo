@@ -43,7 +43,7 @@ describe("Merkle Tree Test", function () {
             usdcAddress,
             root
         );
-        USDC = await hre.ethers.getContractAt('contracts/interfaces/IERC20.sol:IERC20', usdcAddress);
+        USDC = await hre.ethers.getContractAt('@openzeppelin/contracts/token/ERC20/IERC20.sol:IERC20', usdcAddress);
 
         await USDC.connect(usdcHolder).transfer(TestMerkleTreeContract.target, ethers.parseUnits('10000', 6));
     });

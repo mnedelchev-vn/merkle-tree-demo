@@ -1,10 +1,16 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.19;
+pragma solidity 0.8.28;
 
-import "./interfaces/IERC20.sol";
-import "./libs/MerkleProof.sol";
+import {MerkleProof} from "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+
 
 contract TestMerkleTree {
+    using SafeERC20 for IERC20;
+
+    event Claimed(address user, uint256 amount);
+    
     error InvalidClaim();
     error AlreadyClaimed();
 
@@ -26,6 +32,7 @@ contract TestMerkleTree {
         if (!MerkleProof.verifyCalldata(proof, MERKLE_ROOT, leaf)) revert InvalidClaim();
 
         claimed[msg.sender] = 1;
-        IERC20(token).transfer(msg.sender, amount);
+        IERC20(token).safeTransfer(msg.sender, amount);
+        emit Claimed(msg.sender, amount);
     }
 }
